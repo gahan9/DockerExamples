@@ -5,11 +5,11 @@ FROM python:3.7
 FROM python:3.8
 FROM python:3.9
 FROM python:3.10
-FROM python:3.11-rc
-FROM fkrull/multi-python
+# FROM fkrull/multi-python
+# FROM python:3.11-rc
 
 # Specify working directory
-WORKDIR /code
+# WORKDIR /code
 
 # Mount current directory to docker image
 # ADD . ${WORKDIR}
@@ -30,19 +30,38 @@ RUN git clone https://github.com/gahan9/DockerExamples.git ${WORKDIR}/docker_exa
 WORKDIR ${WORKDIR}/docker_examples/Publish_Artifact
 
 # Install PyPi requirements for project
-RUN python3.6 -m pip install -r requirements.txt
-RUN python3.7 -m pip install -r requirements.txt
-RUN python3.8 -m pip install -r requirements.txt
-RUN python3.9 -m pip install -r requirements.txt
-# RUN python3.10 -m pip install -r requirements.txt
+# RUN python3.6 -m pip install -r requirements.txt
+# RUN python3.7 -m pip install -r requirements.txt
+# RUN python3.8 -m pip install -r requirements.txt
+# RUN python3.9 -m pip install -r requirements.txt
+RUN python3.10 -m pip install -r requirements.txt
 # RUN python3.11 -m pip install -r requirements.txt
 
 # Build Artifact
-RUN python3.6 setup.py build_ext --inplace
-RUN python3.7 setup.py build_ext --inplace
-RUN python3.8 setup.py build_ext --inplace
-RUN python3.9 setup.py build_ext --inplace
-# RUN python3.10 setup.py build_ext --inplace
+# RUN python3.6 setup.py build_ext --inplace
+# RUN python3.7 setup.py build_ext --inplace
+# RUN python3.8 setup.py build_ext --inplace
+# RUN python3.9 setup.py build_ext --inplace
+RUN python3.10 setup.py build_ext --inplace
 # RUN python3.11 setup.py build_ext --inplace
 
 ENTRYPOINT [ "/bin/bash" ]
+
+
+# # add a function called inityourfilename to your .py file Then have to make a .c file by
+# RUN cython --embed main.py
+
+# # Generating .o file
+# RUN g++ -c -o main.o main.c -I /usr/include/python3.9/ityourfilename to your .py file Then have to make a .c file by
+# RUN cython --embed main.py
+
+# # Generating .o file
+# RUN g++ -c -o main.o main.c -I /usr/include/python3.9/
+# RUN gcc -g -O3 -Wall -Wstrict-prototypes -fPIC -DMAJOR_VERSION=1 -DMINOR_VERSION=0 -c main.c -I/usr/local/include -I/usr/include/python3.9/ -o main.o
+
+# # create shared library
+# RUN gcc -shared main.o -ltcl83 -o main.so
+# RUN gcc -g -O3 -Wall -Wstrict-prototypes -fPIC -DMAJOR_VERSION=1 -DMINOR_VERSION=0 -c main.c -I/usr/local/include -I/usr/include/python3.9/ -o main.o
+
+# # create shared library
+# RUN gcc -shared main.o -ltcl83 -o main.so
