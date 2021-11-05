@@ -1,4 +1,5 @@
 # This file creates executable from script main.py to generate artifact
+# Reference: https://docs.python.org/3/extending/building.html#building-c-and-c-extensions-with-distutils
 
 __author__ = "Gahan Saraiya"
 
