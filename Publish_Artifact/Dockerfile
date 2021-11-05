@@ -2,10 +2,21 @@
 
 FROM python:3.8
 
+# Specify working directory
+WORKDIR /code
+
+# Mount current directory to docker image
+ADD . ${WORKDIR}
 
 RUN apt-get update
+# Python development libraries
 RUN apt-get install -y python3-dev python3-pip
+# Required libraries to generated dynamic linked library from python file
 RUN apt-get install -y mingw-w64-x86-64-dev gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
+# VCS
+RUN apt-get install -y git
 
-RUN python3 pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.txt
+# RUN git clone https://github.com/gahan9/mystuff.git
+
 RUN python3 setup.py build_ext --inplace
