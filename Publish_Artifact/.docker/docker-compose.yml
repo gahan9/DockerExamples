@@ -1,0 +1,42 @@
+# docker-compose version
+version: "3.9"
+# Top level services
+services:
+  # Services have properties such as
+  # context     (which folder to look for docker file)
+  # dockerfile  (name of docker file)
+  # build       (where to get docker file)
+  # environment (run time arguments, passing environment variable at runtime)
+  # args        (build time arguments, multiple values to be passed)
+  # image       (name of docker image/tag)
+  # networks    (i.e. simple bridge n/w)
+  # ports       (container running on ports)
+  # volumes     (storing data outside of container)
+  py3.8:
+    image: artifact:py3.8
+    build:
+      context: .
+      dockerfile: setup.Dockerfile
+      args:
+        buildversion: 1
+        pythonversion: 3.8
+        entryfilename: main
+        REQUIREMENTS: requirements.txt
+    environment:
+      pythonversion: 3.8
+    volumes:
+      - ..:/docker_examples/Publish_Artifact
+  py39:
+    image: artifact:py39
+    build:
+      context: .
+      dockerfile: setup.Dockerfile
+      args:
+        buildversion: 1
+        pythonversion: 3.9
+        entryfilename: main
+        REQUIREMENTS: requirements.txt
+    environment:
+      pythonversion: 3.9
+#    volumes:
+#      - ..:/docker_examples/Publish_Artifact
