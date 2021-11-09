@@ -5,11 +5,16 @@ ARG pythonversion
 
 FROM python:$pythonversion
 
-ARG pythonversion
+ARG WORK_DIR
 ARG REQUIREMENTS
+ARG pythonversion
 ARG entryfilename
 
+ENV entryfilename=$entryfilename
+ENV REQUIREMENTS=$REQUIREMENTS
+
 RUN echo "output created with pythonVersion: ${pythonversion}"
+WORKDIR ${WORK_DIR}
 
 # Install dependencies
 RUN apt-get update
@@ -21,24 +26,32 @@ RUN apt-get install -y gcc-mingw-w64-x86-64
 # VCS
 RUN apt-get install -y git
 
-# Clone docker repository
-RUN git clone https://github.com/gahan9/DockerExamples.git ${WORKDIR}/docker_examples
 
-# Navigate to Publish_Artifact directory by modifying WORKDIR
-WORKDIR ${WORKDIR}/docker_examples/Publish_Artifact
+# Clone docker repository
+RUN git clone https://github.com/gahan9/DockerExamples.git ${WORK_DIR}
+
+WORKDIR ${WORK_DIR}/Publish_Artifact
 
 # Install PyPi requirements for project
-RUN python -m pip install -r $REQUIREMENTS
+RUN ls -la ${WORKDIR}
+
+# RUN echo WORK_DIR - ${WORK_DIR}
+# RUN echo REQUIREMENTS - ${REQUIREMENTS}
+# RUN echo entryfilename - ${entryfilename}
+# RUN echo pythonversion - ${pythonversion}
+
+RUN pip install -r ${REQUIREMENTS}
 
 # Build Artifact
-# RUN python setup.py build_ext --inplace
-ENV entryfilename=$entryfilename
+RUN python setup.py build_ext --inplace
 
-RUN echo file name: ${entryfilename}, python version: $pythonversion
-RUN cythonize -a -i ${entryfilename}.py
+# RUN echo file name: ${entryfilename}, python version: $pythonversion
+# RUN cythonize -a -i ${entryfilename}.py
+# RUN rm -rf ${entryfilename}.c ${entryfilename}.html
 
 # Make sure we endup with expected output result of artifact
 RUN mv ${entryfilename}.cpython* ${entryfilename}.cpython-${pythonversion}.so
 
+RUN echo Successfully built ${entryfilename}.cpython-${pythonversion}.so
 
 ENTRYPOINT [ "/bin/bash" ]
