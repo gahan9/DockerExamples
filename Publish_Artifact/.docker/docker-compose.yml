@@ -22,12 +22,18 @@ services:
         pythonversion: 3.8
         entryfilename: main
         REQUIREMENTS: requirements.txt
+        WORK_DIR: ${WORK_DIR}
     environment:
       pythonversion: 3.8
+      entryfilename: main
+      REQUIREMENTS: requirements.txt
+      WORK_DIR: ${WORK_DIR}
+    env_file:
+      - config.env
     volumes:
-      - ..:/docker_examples/Publish_Artifact
-  py39:
-    image: artifact:py39
+      - ../..:${WORK_DIR}
+  py3.9:
+    image: artifact:py3.9
     build:
       context: .
       dockerfile: setup.Dockerfile
@@ -36,7 +42,13 @@ services:
         pythonversion: 3.9
         entryfilename: main
         REQUIREMENTS: requirements.txt
+        WORK_DIR: ${WORK_DIR}
     environment:
       pythonversion: 3.9
-#    volumes:
-#      - ..:/docker_examples/Publish_Artifact
+      entryfilename: main
+      REQUIREMENTS: requirements.txt
+      WORK_DIR: ${WORK_DIR}
+    env_file:
+      - config.env
+    volumes:
+      - ../..:${WORK_DIR}
