@@ -1,12 +1,13 @@
 # Web Scrapper to parse token id, name, grade, from https://tagscan.info/tokenID/<token-id>/0/10
 
 import os
+import time
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://tagscan.info/tokenID"
-MAX_TOKEN_ID = 2000  # TODO: Parse max value from https://tagprotocol.com/
+MAX_TOKEN_ID = 20500  # TODO: Parse max value from https://tagprotocol.com/
 
 
 # TODO: Add a function to resume parsing of token
@@ -54,18 +55,23 @@ def parse_tokens(max_tokens=MAX_TOKEN_ID, csv_file="result.csv"):
     if csv_file:
         if os.path.exists(csv_file):
             last_row = open(csv_file, "r").readlines()[-1]
-            last_token_id = int(last_row.split(",")[0])
+            last_token_id = int(last_row.split(";")[0])
             next_token_idx = last_token_id + 1
 
     for token_id in range(next_token_idx, max_tokens+1):
         if token_id in (next_token_idx, max_tokens) or token_id % 100 == 0:  # show progress status on every 200th parsed record
             print(f"[Parser:T{datetime.now().strftime('%H-%M-%S')}]Parsing token {token_id}/{max_tokens}")
-        csv_row = parse_token(token_id)
+        try:
+            csv_row = parse_token(token_id)
+        except AttributeError:
+            print(f"Token {token_id}....trying again")
+            time.sleep(2)
+            csv_row = parse_token(token_id)
 
         with open(csv_file, "a+") as f:
-            if next_token_idx == 1:
-                f.write(",".join(CSV_HEADER) + "\n")
-            f.write(",".join([str(i) for i in csv_row]) + "\n")
+            if next_token_idx == 1 and next_token_idx == token_id:
+                f.write("; ".join(CSV_HEADER) + "\n")
+            f.write("; ".join([str(i) for i in csv_row]) + "\n")
 
 
 if __name__ == "__main__":
